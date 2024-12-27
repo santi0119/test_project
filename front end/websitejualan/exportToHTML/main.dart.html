@@ -1,0 +1,272 @@
+<html>
+<head>
+<title>main.dart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #ebebeb;}
+.s1 { color: #54b33e;}
+.s2 { color: #ed864a; font-weight: bold;}
+.s3 { color: #ed864a;}
+.s4 { color: #33ccff; font-weight: bold;}
+.s5 { color: #7ec3e6;}
+</style>
+</head>
+<body bgcolor="#131314">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.dart</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">'package:flutter/material.dart'</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">'package:shared_preferences/shared_preferences.dart'</span><span class="s2">;</span>
+
+<span class="s3">void </span><span class="s0">main() {</span>
+  <span class="s0">runApp(</span><span class="s3">const </span><span class="s0">MyApp())</span><span class="s2">;</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">MyApp </span><span class="s3">extends </span><span class="s0">StatelessWidget {</span>
+  <span class="s3">const </span><span class="s0">MyApp({</span><span class="s3">super</span><span class="s0">.key})</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">MaterialApp(</span>
+      <span class="s0">title: </span><span class="s1">'Blue Store'</span><span class="s2">,</span>
+      <span class="s0">theme: ThemeData(</span>
+        <span class="s0">colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)</span><span class="s2">,</span>
+        <span class="s0">useMaterial3: </span><span class="s3">true</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">home: </span><span class="s3">const </span><span class="s0">SplashScreen()</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">SplashScreen </span><span class="s3">extends </span><span class="s0">StatelessWidget {</span>
+  <span class="s3">const </span><span class="s0">SplashScreen({</span><span class="s3">super</span><span class="s0">.key})</span><span class="s2">;</span>
+
+  <span class="s0">Future&lt;bool&gt; _checkLoginStatus() async {</span>
+    <span class="s3">final </span><span class="s0">prefs = await SharedPreferences.getInstance()</span><span class="s2">;</span>
+    <span class="s3">return </span><span class="s0">prefs.containsKey(</span><span class="s1">'username'</span><span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">FutureBuilder&lt;bool&gt;(</span>
+      <span class="s0">future: _checkLoginStatus()</span><span class="s2">,</span>
+      <span class="s0">builder: (context</span><span class="s2">, </span><span class="s0">snapshot) {</span>
+        <span class="s3">if </span><span class="s0">(snapshot.connectionState == ConnectionState.waiting) {</span>
+          <span class="s3">return const </span><span class="s0">Scaffold(</span>
+            <span class="s0">body: Center(child: CircularProgressIndicator())</span><span class="s2">,</span>
+          <span class="s0">)</span><span class="s2">;</span>
+        <span class="s0">}</span>
+        <span class="s3">if </span><span class="s0">(snapshot.data == </span><span class="s3">true</span><span class="s0">) {</span>
+          <span class="s3">return const </span><span class="s0">HomePage()</span><span class="s2">;</span>
+        <span class="s0">}</span>
+        <span class="s3">return const </span><span class="s0">LoginPage()</span><span class="s2">;</span>
+      <span class="s0">}</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">LoginPage </span><span class="s3">extends </span><span class="s0">StatefulWidget {</span>
+  <span class="s3">const </span><span class="s0">LoginPage({</span><span class="s3">super</span><span class="s0">.key})</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">State&lt;LoginPage&gt; createState() =&gt; _LoginPageState()</span><span class="s2">;</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">_LoginPageState </span><span class="s3">extends </span><span class="s0">State&lt;LoginPage&gt; {</span>
+  <span class="s3">final </span><span class="s0">TextEditingController _usernameController = TextEditingController()</span><span class="s2">;</span>
+
+  <span class="s0">Future&lt;</span><span class="s3">void</span><span class="s0">&gt; _login() async {</span>
+    <span class="s3">final </span><span class="s0">prefs = await SharedPreferences.getInstance()</span><span class="s2">;</span>
+    <span class="s0">await prefs.setString(</span><span class="s1">'username'</span><span class="s2">, </span><span class="s0">_usernameController.text)</span><span class="s2">;</span>
+
+    <span class="s3">if </span><span class="s0">(mounted) {</span>
+      <span class="s0">Navigator.pushReplacement(</span>
+        <span class="s0">context</span><span class="s2">,</span>
+        <span class="s0">MaterialPageRoute(builder: (context) =&gt; </span><span class="s3">const </span><span class="s0">HomePage())</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">;</span>
+    <span class="s0">}</span>
+  <span class="s0">}</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">Scaffold(</span>
+      <span class="s0">appBar: AppBar(</span>
+        <span class="s0">title: </span><span class="s3">const </span><span class="s0">Text(</span>
+          <span class="s1">'Login'</span><span class="s2">,</span>
+          <span class="s0">style: TextStyle(color: Colors.white)</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">backgroundColor: Colors.blue</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">body: Padding(</span>
+        <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.all(</span><span class="s4">16.0</span><span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">child: Column(</span>
+          <span class="s0">mainAxisAlignment: MainAxisAlignment.center</span><span class="s2">,</span>
+          <span class="s0">children: [</span>
+            <span class="s3">const </span><span class="s0">Text(</span>
+              <span class="s1">'Welcome to Blue Store!'</span><span class="s2">,</span>
+              <span class="s0">style: TextStyle(fontSize: </span><span class="s4">24</span><span class="s2">, </span><span class="s0">fontWeight: FontWeight.bold)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+            <span class="s3">const </span><span class="s0">SizedBox(height: </span><span class="s4">20</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">TextField(</span>
+              <span class="s0">controller: _usernameController</span><span class="s2">,</span>
+              <span class="s0">decoration: </span><span class="s3">const </span><span class="s0">InputDecoration(</span>
+                <span class="s0">labelText: </span><span class="s1">'Enter your username'</span><span class="s2">,</span>
+                <span class="s0">border: OutlineInputBorder()</span><span class="s2">,</span>
+              <span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+            <span class="s3">const </span><span class="s0">SizedBox(height: </span><span class="s4">20</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">ElevatedButton(</span>
+              <span class="s0">onPressed: _login</span><span class="s2">,</span>
+              <span class="s0">style: ElevatedButton.styleFrom(backgroundColor: Colors.blue)</span><span class="s2">,</span>
+              <span class="s0">child: </span><span class="s3">const </span><span class="s0">Text(</span><span class="s1">'Login'</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">]</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">HomePage </span><span class="s3">extends </span><span class="s0">StatefulWidget {</span>
+  <span class="s3">const </span><span class="s0">HomePage({</span><span class="s3">super</span><span class="s0">.key})</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">State&lt;HomePage&gt; createState() =&gt; _HomePageState()</span><span class="s2">;</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">_HomePageState </span><span class="s3">extends </span><span class="s0">State&lt;HomePage&gt; {</span>
+  <span class="s0">String username = </span><span class="s1">''</span><span class="s2">;</span>
+
+  <span class="s0">Future&lt;</span><span class="s3">void</span><span class="s0">&gt; _getUsername() async {</span>
+    <span class="s3">final </span><span class="s0">prefs = await SharedPreferences.getInstance()</span><span class="s2">;</span>
+    <span class="s0">setState(() {</span>
+      <span class="s0">username = prefs.getString(</span><span class="s1">'username'</span><span class="s0">) ?? </span><span class="s1">''</span><span class="s2">;</span>
+    <span class="s0">})</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  <span class="s0">Future&lt;</span><span class="s3">void</span><span class="s0">&gt; _logout() async {</span>
+    <span class="s3">final </span><span class="s0">prefs = await SharedPreferences.getInstance()</span><span class="s2">;</span>
+    <span class="s0">await prefs.remove(</span><span class="s1">'username'</span><span class="s0">)</span><span class="s2">;</span>
+
+    <span class="s3">if </span><span class="s0">(mounted) {</span>
+      <span class="s0">Navigator.pushReplacement(</span>
+        <span class="s0">context</span><span class="s2">,</span>
+        <span class="s0">MaterialPageRoute(builder: (context) =&gt; </span><span class="s3">const </span><span class="s0">LoginPage())</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">;</span>
+    <span class="s0">}</span>
+  <span class="s0">}</span>
+
+  <span class="s0">@override</span>
+  <span class="s3">void </span><span class="s0">initState() {</span>
+    <span class="s3">super</span><span class="s0">.initState()</span><span class="s2">;</span>
+    <span class="s0">_getUsername()</span><span class="s2">;</span>
+  <span class="s0">}</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">Scaffold(</span>
+      <span class="s0">appBar: AppBar(</span>
+        <span class="s0">backgroundColor: Colors.blue</span><span class="s2">,</span>
+        <span class="s0">title: Row(</span>
+          <span class="s0">mainAxisAlignment: MainAxisAlignment.spaceBetween</span><span class="s2">,</span>
+          <span class="s0">children: [</span>
+            <span class="s0">Text(</span>
+              <span class="s1">'Welcome, </span><span class="s0">$username</span><span class="s1">'</span><span class="s2">,</span>
+              <span class="s0">style: </span><span class="s3">const </span><span class="s0">TextStyle(color: Colors.white)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">IconButton(</span>
+              <span class="s0">onPressed: _logout</span><span class="s2">,</span>
+              <span class="s0">icon: </span><span class="s3">const </span><span class="s0">Icon(Icons.logout</span><span class="s2">, </span><span class="s0">color: Colors.white)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">]</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">body: </span><span class="s3">const </span><span class="s0">OnlineStore()</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">OnlineStore </span><span class="s3">extends </span><span class="s0">StatelessWidget {</span>
+  <span class="s3">const </span><span class="s0">OnlineStore({</span><span class="s3">super</span><span class="s0">.key})</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">GridView.builder(</span>
+      <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.all(</span><span class="s4">16.0</span><span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">gridDelegate: </span><span class="s3">const </span><span class="s0">SliverGridDelegateWithFixedCrossAxisCount(</span>
+        <span class="s0">crossAxisCount: </span><span class="s4">2</span><span class="s2">,</span>
+        <span class="s0">crossAxisSpacing: </span><span class="s4">10</span><span class="s2">,</span>
+        <span class="s0">mainAxisSpacing: </span><span class="s4">10</span><span class="s2">,</span>
+        <span class="s0">childAspectRatio: </span><span class="s4">3 </span><span class="s0">/ </span><span class="s4">4</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+      <span class="s0">itemCount: </span><span class="s4">4</span><span class="s2">, </span><span class="s5">// Display 4 products</span>
+      <span class="s0">itemBuilder: (context</span><span class="s2">, </span><span class="s0">index) {</span>
+        <span class="s3">return </span><span class="s0">ProductCard(</span>
+          <span class="s0">productName: </span><span class="s1">'Product </span><span class="s0">${index + </span><span class="s4">1</span><span class="s0">}</span><span class="s1">'</span><span class="s2">,</span>
+          <span class="s0">productPrice: </span><span class="s1">'\$</span><span class="s0">${(index + </span><span class="s4">1</span><span class="s0">) * </span><span class="s4">20</span><span class="s0">}</span><span class="s1">'</span><span class="s2">,</span>
+          <span class="s0">productImage: </span><span class="s1">'assets/images/baju</span><span class="s0">${index + </span><span class="s4">1</span><span class="s0">}</span><span class="s1">.jpg'</span><span class="s2">,</span>
+        <span class="s0">)</span><span class="s2">;</span>
+      <span class="s0">}</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+
+<span class="s3">class </span><span class="s0">ProductCard </span><span class="s3">extends </span><span class="s0">StatelessWidget {</span>
+  <span class="s3">final </span><span class="s0">String productName</span><span class="s2">;</span>
+  <span class="s3">final </span><span class="s0">String productPrice</span><span class="s2">;</span>
+  <span class="s3">final </span><span class="s0">String productImage</span><span class="s2">;</span>
+
+  <span class="s3">const </span><span class="s0">ProductCard({</span>
+    <span class="s3">super</span><span class="s0">.key</span><span class="s2">,</span>
+    <span class="s0">required </span><span class="s3">this</span><span class="s0">.productName</span><span class="s2">,</span>
+    <span class="s0">required </span><span class="s3">this</span><span class="s0">.productPrice</span><span class="s2">,</span>
+    <span class="s0">required </span><span class="s3">this</span><span class="s0">.productImage</span><span class="s2">,</span>
+  <span class="s0">})</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build(BuildContext context) {</span>
+    <span class="s3">return </span><span class="s0">Card(</span>
+      <span class="s0">elevation: </span><span class="s4">4</span><span class="s2">,</span>
+      <span class="s0">child: Column(</span>
+        <span class="s0">crossAxisAlignment: CrossAxisAlignment.start</span><span class="s2">,</span>
+        <span class="s0">children: [</span>
+          <span class="s0">Expanded(</span>
+            <span class="s0">child: Image.asset(</span>
+              <span class="s0">productImage</span><span class="s2">,</span>
+              <span class="s0">fit: BoxFit.cover</span><span class="s2">,</span>
+              <span class="s0">width: double.infinity</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">)</span><span class="s2">,</span>
+          <span class="s3">const </span><span class="s0">SizedBox(height: </span><span class="s4">8</span><span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">Padding(</span>
+            <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.symmetric(horizontal: </span><span class="s4">8.0</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">child: Text(</span>
+              <span class="s0">productName</span><span class="s2">,</span>
+              <span class="s0">style: </span><span class="s3">const </span><span class="s0">TextStyle(fontSize: </span><span class="s4">16</span><span class="s2">, </span><span class="s0">fontWeight: FontWeight.bold)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">Padding(</span>
+            <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.symmetric(horizontal: </span><span class="s4">8.0</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">child: Text(</span>
+              <span class="s0">productPrice</span><span class="s2">,</span>
+              <span class="s0">style: </span><span class="s3">const </span><span class="s0">TextStyle(fontSize: </span><span class="s4">14</span><span class="s2">, </span><span class="s0">color: Colors.blue)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">Padding(</span>
+            <span class="s0">padding: </span><span class="s3">const </span><span class="s0">EdgeInsets.all(</span><span class="s4">8.0</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">child: ElevatedButton(</span>
+              <span class="s0">style: ElevatedButton.styleFrom(backgroundColor: Colors.blue)</span><span class="s2">,</span>
+              <span class="s0">onPressed: () {}</span><span class="s2">,</span>
+              <span class="s0">child: </span><span class="s3">const </span><span class="s0">Text(</span><span class="s1">'Add to Cart'</span><span class="s0">)</span><span class="s2">,</span>
+            <span class="s0">)</span><span class="s2">,</span>
+          <span class="s0">)</span><span class="s2">,</span>
+        <span class="s0">]</span><span class="s2">,</span>
+      <span class="s0">)</span><span class="s2">,</span>
+    <span class="s0">)</span><span class="s2">;</span>
+  <span class="s0">}</span>
+<span class="s0">}</span>
+</pre>
+</body>
+</html>
